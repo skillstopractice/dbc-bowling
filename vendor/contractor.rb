@@ -16,7 +16,7 @@ class Contractor
     @assumptions = []
     @assurances  = []
     @alterations = {}
-    @context     = nil
+    @context     = ""
   end
 
   def alters(name, &b)
@@ -27,8 +27,8 @@ class Contractor
 
   attr_reader :alterations
 
-  def when(context)
-    @context = context
+  def acknowledges(context)
+    @context << "[#{context}]"
 
     self
   end
@@ -53,7 +53,7 @@ class Contractor
     return yield(*) if self.class.conditions_disabled?
 
     @assumptions.each do |description, condition|
-      if @context
+      if @context != ""
         fail "Contract Violation - [when #{@context}] #{description} (in #{@description})" unless condition.call(*)
       else
         fail "Contract Violation - #{description} (in #{@description})" unless condition.call(*)
@@ -71,8 +71,8 @@ class Contractor
     end
 
     @assurances.each do |description, condition|
-      if @context
-        fail "Contract Violation - [when #{@context}] #{description} (in #{@description})" unless condition.call(result, alterations)
+      if @context != ""
+        fail "Contract Violation - #{@context} #{description} (in #{@description})" unless condition.call(result, alterations)
       else
         fail "Contract Violation - #{description} (in #{@description})" unless condition.call(result, alterations)
       end
