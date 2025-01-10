@@ -6,16 +6,20 @@ class Game
   def initialize
     @score            = 0
     @frame_scores     = []
-    @current_frame    = 1
     @completed_frames = []
   end
 
-  attr_reader :score, :completed_frames, :current_frame
+  attr_reader :score, :completed_frames, :frame_scores
 
   def roll(ball_score)
     if frame_ending_roll?(ball_score)
       record_ball_score(ball_score)
-      start_new_frame
+
+      if not_last_frame_yet?
+        start_new_frame
+      else
+        finish_game
+      end
     else
       record_ball_score(ball_score)
     end
@@ -35,14 +39,30 @@ class Game
     @frame_scores.length == 1
   end
 
+  def third_ball_in_frame?
+    @frame_scores.length == 2
+  end
+
   # ...
 
-  def frame_ending_roll?(ball_score)
-    not_last_frame_yet? && (strike?(ball_score) || second_ball_in_frame?)
+  def pins_left_standing?(ball_score)
+    (strike?(ball_score)|| spare?(ball_score)) ? false : true
   end
 
   def strike?(ball_score)
     ball_score == 10
+  end
+
+  def spare?(ball_score)
+    second_ball_in_frame? && (frame_scores.last + ball_score) == 10
+  end
+
+  def frame_ending_roll?(ball_score)
+    if not_last_frame_yet?
+      strike?(ball_score) || second_ball_in_frame?
+    else
+      (second_ball_in_frame? && pins_left_standing?(ball_score)) || third_ball_in_frame?
+    end
   end
 
   # ...
@@ -55,9 +75,14 @@ class Game
     !last_frame?
   end
 
-  # FIXME: Not exactly correct. Only allow third ball if two strikes in last frame.
+  # ...
+
+  def completed?
+    @completed_frames.count == 10
+  end
+
   def not_yet_completed?
-    not_last_frame_yet? || @frame_scores.length < 3
+    ! completed?
   end
 
   # ...
@@ -70,5 +95,9 @@ class Game
     @completed_frames << @frame_scores
 
     @frame_scores = []
+  end
+
+  def finish_game
+    @completed_frames << @frame_scores
   end
 end

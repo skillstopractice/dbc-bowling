@@ -2,4 +2,6 @@ require_relative "lib/game"
 
 game = Game.new
 
-20.times { game.roll(5) }
+12.times { game.roll(10) }
+
+p game.completed?

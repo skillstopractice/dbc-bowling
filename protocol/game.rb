@@ -9,6 +9,22 @@ module Protocol
                 .work { super }
     end
 
+    def completed?
+      case completed_frames.count
+      when 0..9
+        contractor = Contractor.for("An incomplete game")
+                               .ensures("has 0..9 completed frames ") { |result| result == false }
+      when 10
+        contractor = Contractor.for("A completed game")
+                               .ensures("has ten completed frames") { |result| result == true }
+      else
+        # Fixme: This belongs in a completed_frames contract.
+        Contractor.broken("Game has #{completed_frames.count} frames, which is invalid")
+      end
+
+      contractor.work { super }
+    end
+
     def roll(ball_score)
       contractor = Contractor.for("Updating the bowling scorecard after a roll")
 
