@@ -13,7 +13,7 @@ class Game
 
   def roll(ball_score)
     if ball_score == 10
-      @current_frame += 1
+      @current_frame += 1 unless @current_frame == 10
     end
 
     @ball_scores << ball_score
