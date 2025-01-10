@@ -2,4 +2,4 @@ require_relative "lib/game"
 
 game = Game.new
 
-game.roll(10)
+10.times { game.roll(10) }
