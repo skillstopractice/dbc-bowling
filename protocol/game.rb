@@ -28,6 +28,17 @@ module Protocol
         diff[:score][:after] >= diff[:score][:before] + ball_score
       end
 
+      # ...
+
+      if ball_score == 10
+        contractor.alters(:frame) { current_frame }
+
+        # FIXME: Add edge case for final frame.
+        contractor.ensures("game advances to the next frame when strike has been thrown") do |result, diff|
+          diff[:frame][:after] == diff[:frame][:before] + 1
+        end
+      end
+
       # if ball_scores.values_at(-2,-1).compact.sum < 10
       #   non_bonus_condition = "game score will increase by exactly the ball score amount if " +
       #                         "the last two ball scores before it add up to less than 10"
