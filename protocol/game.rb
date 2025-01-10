@@ -35,8 +35,14 @@ module Protocol
         if second_ball_for_frame?
           contractor.alters(:frame) { current_frame }
 
-          contractor.ensures("game advances to next frame on strike in frames 1-9") do |result, diff|
-            diff[:frame][:after] == diff[:frame][:before] + 1
+          if current_frame < 10
+            contractor.ensures("game advances to next frame on strike in frames 1-9") do |result, diff|
+              diff[:frame][:after] == diff[:frame][:before] + 1
+            end
+          else
+            contractor.ensures("game does not change frame in frame 10") do |result, diff|
+              diff[:frame][:after] == diff[:frame][:before]
+            end
           end
         end
       when 10
