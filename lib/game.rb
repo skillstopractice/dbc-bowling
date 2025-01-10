@@ -3,11 +3,13 @@ require_relative "../protocol/game"
 class Game
   prepend Protocol::Game
 
-  def roll(ball_score)
-
+  def initialize
+    @score = 0
   end
 
-  def score
-    0
+  attr_reader :score
+
+  def roll(ball_score)
+    @score += ball_score
   end
 end
