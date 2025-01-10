@@ -30,7 +30,16 @@ module Protocol
 
       # ...
 
-      if ball_score == 10
+      case ball_score
+      when 0..9
+        if second_ball_for_frame?
+          contractor.alters(:frame) { current_frame }
+
+          contractor.ensures("game advances to next frame on strike in frames 1-9") do |result, diff|
+            diff[:frame][:after] == diff[:frame][:before] + 1
+          end
+        end
+      when 10
         contractor.alters(:frame) { current_frame }
 
         if current_frame < 10

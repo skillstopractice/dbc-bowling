@@ -20,4 +20,8 @@ class Game
 
     @score += ball_score
   end
+
+  def second_ball_for_frame?
+    true
+  end
 end
