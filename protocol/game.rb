@@ -11,40 +11,38 @@ module Protocol
     end
 
     def roll(ball_score)
-      contractor = Contractor.for("Recording a player's roll")
+      contractor = Contractor.for("Updating the bowling scorecard after a roll")
 
       contractor.assumes("a single ball will knock down between 0 and 10 pins") do
         (0..10).include?(ball_score)
       end
 
-      contractor.assumes("At most 20 balls have already been rolled before this one") do
-        balls_rolled <= 20
+      contractor.assumes("Game has not yet been completed") do
+        not_yet_completed?
       end
 
-      case ball_score
-      when 0..9
-        contractor.alters(:frame) { current_frame }
+      contractor.may_alter(:frame) { current_frame }
 
-        if second_ball_for_frame?
-          if current_frame < 10
-            contractor.ensures("game advances to next frame on strike in frames 1-9") do |result, diff|
-              diff[:frame][:after] == diff[:frame][:before] + 1
-            end
-          else
-            contractor.ensures("game does not change frame in frame 10") do |result, diff|
-              diff[:frame][:after] == diff[:frame][:before]
-            end
-          end
+      if frame_ending_roll?(ball_score)
+        contractor.acknowledges("Frame Change")
+
+        contractor.acknowledges("Strike")               if strike?(ball_score)
+        contractor.acknowledges("Second ball in frame") if second_ball_in_frame?
+
+        contractor.ensures("game advances to next frame") do |result, diff|
+          diff[:frame][:after] == diff[:frame][:before] + 1
         end
-      when 10
-        contractor.alters(:frame) { current_frame }
+      else
+        if first_ball_in_frame?
+          contractor.acknowledges("First Ball")
 
-        if current_frame < 10
-          contractor.ensures("game advances to next frame on strike in frames 1-9") do |result, diff|
-            diff[:frame][:after] == diff[:frame][:before] + 1
+          contractor.ensures("game won't change frames when not a strike") do |result, diff|
+            diff[:frame][:after] == diff[:frame][:before]
           end
         else
-          contractor.ensures("game does not change frame on strike in frame 10") do |result, diff|
+          contractor.acknowledges("Last Frame")
+
+          contractor.ensures("game does not change frame at all in frame 10") do |result, diff|
             diff[:frame][:after] == diff[:frame][:before]
           end
         end

@@ -12,19 +12,15 @@ describe "Game#roll" do
   end
 
   it "should allow 1..10 for a ball score" do
-    skip
-
-    #(1..10).each { |ball_score| game.roll(ball_score) }
+    (1..10).each { |ball_score| game.roll(ball_score) }
   end
 
-  it "should allow up to 21 balls to be rolled" do
-    skip
-
-    #21.times { |ball_score| game.roll(10) } # the perfect game, glorious
+  it "should allow 20 balls to be rolled in a game without strikes" do
+    20.times { |ball_score| game.roll(5) } # the perfect game, glorious
   end
 
-  it "should not allow more than 21 balls to be rolled" do
-    skip
-    #assert_raises { 22.times { |ball_score| game.roll(10) } }
-  end
+  # TODO game without strikes
+  # game of all strikes
+  # game with strikes just in the last frame (still need third ball)
+  # game with spare in last frame (still need third ball)
 end

@@ -13,23 +13,58 @@ class Game
   attr_reader :score, :current_frame, :balls_rolled
 
   def roll(ball_score)
-    if ball_score == 10
-      @current_frame += 1 unless @current_frame == 10
-    end
-
-    # FIXME: THis is actually *wrong* code because it should
-    # track scores for prior frames as well.
-    if @frame_scores.empty?
-      @frame_scores << ball_score
+    if frame_ending_roll?(ball_score)
+      record_ball_score(ball_score)
+      start_new_frame
     else
-      @frame_scores = []
-      @current_frame += 1 unless @current_frame == 10
+      record_ball_score(ball_score)
     end
-
-    @score += ball_score
   end
 
-  def second_ball_for_frame?
+  private
+
+  def first_ball_in_frame?
+    @frame_scores.empty?
+  end
+
+  def second_ball_in_frame?
     @frame_scores.length == 1
+  end
+
+  # ...
+
+  def frame_ending_roll?(ball_score)
+    not_last_frame_yet? && (strike?(ball_score) || second_ball_in_frame?)
+  end
+
+  def strike?(ball_score)
+    ball_score == 10
+  end
+
+  # ...
+
+  def last_frame?
+    current_frame == 10
+  end
+
+  def not_last_frame_yet?
+    !last_frame?
+  end
+
+  # FIXME: Not exactly correct. Only allow third ball if two strikes in last frame.
+  def not_yet_completed?
+    not_last_frame_yet? || @frame_scores.length < 3
+  end
+
+  # ...
+
+  def record_ball_score(score)
+    @frame_scores << score
+  end
+
+  def start_new_frame
+    @current_frame += 1
+
+    @frame_scores = []
   end
 end

@@ -25,6 +25,8 @@ class Contractor
     self
   end
 
+  alias_method :may_alter, :alters
+
   attr_reader :alterations
 
   def acknowledges(context)
