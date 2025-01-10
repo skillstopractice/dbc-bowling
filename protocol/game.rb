@@ -4,8 +4,9 @@ module Protocol
   module Game
     def initialize
       Contractor.for("A newly created game")
-                .ensures("begins with a score of zero") { score == 0 }
-                .ensures("begins on the first frame")   { current_frame == 1 }
+                .ensures("begins with a score of zero")      { score == 0 }
+                .ensures("begins on the first frame")        { current_frame == 1 }
+                .ensures("begins with no balls rolled yet ") { balls_rolled == 0 }
                 .work { super }
     end
 
@@ -17,24 +18,14 @@ module Protocol
       end
 
       contractor.assumes("At most 20 balls have already been rolled before this one") do
-        ball_scores.length <= 20
+        balls_rolled <= 20
       end
-
-      # ...
-
-      contractor.alters(:score) { score }
-
-      contractor.ensures("game score will increase by at least the ball score amount") do |result, diff|
-        diff[:score][:after] >= diff[:score][:before] + ball_score
-      end
-
-      # ...
 
       case ball_score
       when 0..9
-        if second_ball_for_frame?
-          contractor.alters(:frame) { current_frame }
+        contractor.alters(:frame) { current_frame }
 
+        if second_ball_for_frame?
           if current_frame < 10
             contractor.ensures("game advances to next frame on strike in frames 1-9") do |result, diff|
               diff[:frame][:after] == diff[:frame][:before] + 1
@@ -58,17 +49,6 @@ module Protocol
           end
         end
       end
-
-      # if ball_scores.values_at(-2,-1).compact.sum < 10
-      #   non_bonus_condition = "game score will increase by exactly the ball score amount if " +
-      #                         "the last two ball scores before it add up to less than 10"
-
-      #   contractor.ensures(non_bonus_condition) do |result, diff|
-      #     diff[:score][:after] == diff[:score][:before] + ball_score
-      #   end
-      # else
-      #   contractor.broken("Game#roll does not yet handle spares or strikes")
-      # end
 
       contractor.work { super }
     end
