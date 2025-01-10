@@ -50,7 +50,7 @@ class Contractor
   end
 
   def work(*)
-    return yield(*) if Contract.conditions_disabled?
+    return yield(*) if self.class.conditions_disabled?
 
     @assumptions.each do |description, condition|
       if @context
