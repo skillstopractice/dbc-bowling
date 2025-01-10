@@ -4,13 +4,13 @@ class Game
   prepend Protocol::Game
 
   def initialize
-    @score         = 0
-    @balls_rolled  = 0
-    @frame_scores  = []
-    @current_frame = 1
+    @score            = 0
+    @frame_scores     = []
+    @current_frame    = 1
+    @completed_frames = []
   end
 
-  attr_reader :score, :current_frame, :balls_rolled
+  attr_reader :score, :completed_frames, :current_frame
 
   def roll(ball_score)
     if frame_ending_roll?(ball_score)
@@ -22,6 +22,10 @@ class Game
   end
 
   private
+
+  def current_frame
+    completed_frames.length + 1
+  end
 
   def first_ball_in_frame?
     @frame_scores.empty?
@@ -63,7 +67,7 @@ class Game
   end
 
   def start_new_frame
-    @current_frame += 1
+    @completed_frames << @frame_scores
 
     @frame_scores = []
   end

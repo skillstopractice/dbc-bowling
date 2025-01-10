@@ -6,7 +6,6 @@ module Protocol
       Contractor.for("A newly created game")
                 .ensures("begins with a score of zero")      { score == 0 }
                 .ensures("begins on the first frame")        { current_frame == 1 }
-                .ensures("begins with no balls rolled yet ") { balls_rolled == 0 }
                 .work { super }
     end
 
