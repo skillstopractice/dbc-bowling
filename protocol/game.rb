@@ -4,7 +4,8 @@ module Protocol
   module Game
     def initialize
       Contractor.for("A newly created game")
-                .ensures("score begins at zero") { |result| score == 0 }
+                .ensures("begins with a score of zero") { score == 0 }
+                .ensures("begins on the first frame")   { current_frame == 1 }
                 .work { super }
     end
 
@@ -26,7 +27,6 @@ module Protocol
       contractor.ensures("game score will increase by at least the ball score amount") do |result, diff|
         diff[:score][:after] >= diff[:score][:before] + ball_score
       end
-
 
       # if ball_scores.values_at(-2,-1).compact.sum < 10
       #   non_bonus_condition = "game score will increase by exactly the ball score amount if " +

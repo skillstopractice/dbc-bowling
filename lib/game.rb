@@ -4,11 +4,12 @@ class Game
   prepend Protocol::Game
 
   def initialize
-    @score       = 0
-    @ball_scores = []
+    @score         = 0
+    @ball_scores   = []
+    @current_frame = 1
   end
 
-  attr_reader :score, :ball_scores
+  attr_reader :score, :ball_scores, :current_frame
 
   def roll(ball_score)
     @ball_scores << ball_score
