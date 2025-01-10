@@ -6,6 +6,7 @@ class Game
   def initialize
     @score         = 0
     @ball_scores   = []
+    @frame_scores  = []
     @current_frame = 1
   end
 
@@ -16,12 +17,13 @@ class Game
       @current_frame += 1 unless @current_frame == 10
     end
 
-    @ball_scores << ball_score
+    @ball_scores  << ball_score
+    @frame_scores << ball_score
 
     @score += ball_score
   end
 
   def second_ball_for_frame?
-    true
+    @frame_scores.length == 1
   end
 end
