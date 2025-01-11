@@ -1,5 +1,7 @@
 require_relative "lib/frame"
 
-frame = Frame.new(10)
+frame = Frame.new(9)
 
-frame << 11
+frame << 10
+frame << 0
+frame << 1
