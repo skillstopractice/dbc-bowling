@@ -1,7 +1,5 @@
-require_relative "lib/game"
+require_relative "lib/frame"
 
-game = Game.new
+frame = Frame.new(10)
 
-13.times { game.roll(10) }
-
-p game.completed?
+frame << 11

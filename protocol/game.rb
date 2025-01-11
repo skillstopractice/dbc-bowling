@@ -5,8 +5,8 @@ module Protocol
     unless Contractor.conditions_disabled?
       def initialize
         Contractor.for("A newly created game")
-                  .ensures("begins with a score of zero")      { score == 0 }
-                  .ensures("begins on the first frame")        { current_frame == 1 }
+                .ensures("begins with a score of zero") { score == 0 }
+                  .ensures("begins on the first frame") { current_frame == 1 }
                   .work { super }
       end
 
