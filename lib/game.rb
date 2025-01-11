@@ -25,6 +25,10 @@ class Game
     end
   end
 
+  def completed?
+    @completed_frames.count == 10
+  end
+
   private
 
   def current_frame
@@ -76,10 +80,6 @@ class Game
   end
 
   # ...
-
-  def completed?
-    @completed_frames.count == 10
-  end
 
   def not_yet_completed?
     ! completed?

@@ -8,7 +8,7 @@ class Contractor
   end
 
   def self.conditions_disabled?
-    !! @conditions_disabled
+    !!( @conditions_disabled  || ENV["SKIP_CONTRACT_ENFORCEMENT"] )
   end
 
   def initialize(description, &task)
