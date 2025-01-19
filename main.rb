@@ -1,23 +1,27 @@
-require_relative "lib/frame"
+require_relative "lib/game"
 
-frame1 = Frame.new(1)
-frame1 << 10
+game = Game.new
 
-frame2 = Frame.new(2)
-frame1.next_frame = frame2
+# require_relative "lib/frame"
 
-frame2 << 2
-frame2 << 8
+# frame1 = Frame.new(1)
+# frame1 << 10
 
-# frame3 = Frame.new(3)
-# frame2.next_frame = frame3
+# frame2 = Frame.new(2)
+# frame1.next_frame = frame2
 
-# frame3 << 8
+# frame2 << 2
+# frame2 << 8
 
-p frame1.score
+# # frame3 = Frame.new(3)
+# # frame2.next_frame = frame3
 
-#first_frame << 5
+# # frame3 << 8
+
+# p frame1.score
+
+# #first_frame << 5
 
 
 
-#first_frame.next_frame.frame_number
+# #first_frame.next_frame.frame_number
