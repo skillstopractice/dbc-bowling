@@ -81,16 +81,19 @@ class Frame
   end
 
   def bonus_rolls_after_strike
-    if last_frame?
-      frame_scores.last(2)
-    elsif frame_number == 9
-      next_frame.frame_scores.first(2)
-    else
+    case frame_number
+    when 1..8
       if next_frame&.strike?
         frame_after_next = next_frame.next_frame
 
-        [next_frame.frame_scores.first, frame_after_next.frame_scores.first]
+        [10, frame_after_next.frame_scores.first]
+      else
+        next_frame.frame_scores
       end
+    when 9
+      next_frame.frame_scores.first(2)
+    when 10
+      frame_scores.last(2)
     end
   end
 
