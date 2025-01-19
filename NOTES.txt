@@ -1,3 +1,9 @@
+## Advancing frames
+
+For frames 1-9:
+  A strike (first_ball_score = 10) advances to the immediately next frame
+  Otherwise the frame advances after two balls have been rolled.
+
 ## Scoring a bowling frame
 
 -> Roll first ball for frame
@@ -14,9 +20,3 @@ Otherwise
   Otherwise
     [!] Open Frame
      :  Frame score equals the number of pins knocked down in the frame. (first_roll + second_roll)
-
--> Advancing frames
-
-For frames 1-9:
-  A strike (first_ball_score = 10) advances to the immediately next frame
-  Otherwise the frame advances after two balls have been rolled.
