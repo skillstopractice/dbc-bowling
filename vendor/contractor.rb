@@ -12,22 +12,20 @@ class Contractor
   end
 
   def initialize(description, &task)
-    @description = description
-    @assumptions = []
-    @assurances  = []
-    @alterations = {}
-    @context     = ""
+    @description  = description
+    @assumptions  = []
+    @assurances   = []
+    @observations = {}
+    @context      = ""
   end
 
-  def alters(name, &b)
-    @alterations[name] = { action: b }
+  def watches(name, &b)
+    @observations[name] = { action: b }
 
     self
   end
 
-  alias_method :may_alter, :alters
-
-  attr_reader :alterations
+  attr_reader :observations
 
   def acknowledges(context)
     @context << "[#{context}]"
@@ -56,27 +54,27 @@ class Contractor
 
     @assumptions.each do |description, condition|
       if @context != ""
-        fail "Contract Violation - [when #{@context}] #{description} (in #{@description})" unless condition.call(*)
+        fail "Failed expectation: [when #{@context}] #{description} (in #{@description})" unless condition.call(*)
       else
-        fail "Contract Violation - #{description} (in #{@description})" unless condition.call(*)
+        fail "Failed expectation: #{description} (in #{@description})" unless condition.call(*)
       end
     end
 
-    @alterations.each do |message, diff|
+    @observations.each do |message, diff|
       diff[:before] = diff[:action].call
     end
 
     result = yield(*)
 
-    @alterations.each do |message, diff|
+    @observations.each do |message, diff|
       diff[:after] = diff[:action].call
     end
 
     @assurances.each do |description, condition|
       if @context != ""
-        fail "Contract Violation - #{@context} #{description} (in #{@description})" unless condition.call(result, alterations)
+        fail "Failed expectation: #{@context} #{description} (in #{@description})" unless condition.call(result, observations)
       else
-        fail "Contract Violation - #{description} (in #{@description})" unless condition.call(result, alterations)
+        fail "Failed expectation: #{description} (in #{@description})" unless condition.call(result, observations)
       end
     end
 
