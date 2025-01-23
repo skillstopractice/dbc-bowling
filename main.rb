@@ -32,3 +32,7 @@ game << 1
 game << 10
 
 p game.scoreboard
+
+game.undo
+
+p game.scoreboard

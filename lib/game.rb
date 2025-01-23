@@ -2,23 +2,33 @@ require_relative "frame"
 require_relative "frame_score"
 
 class Game
+  State = Struct.new(:balls_rolled, :frame_scores, :current_frame)
+
   def initialize
-    @balls_rolled     = []
-    @frame_scores     = []
-    @current_frame    = Frame.new(number: 1)
+    @state = State.new(balls_rolled: [],
+                       frame_scores: [],
+                       current_frame: Frame.new(number: 1))
+
+    @history = []
+  end
+
+  def undo
+    @state = @history.pop
   end
 
   def <<(ball_score)
-    @balls_rolled  << ball_score
-    @current_frame << ball_score
+    @history << @state.dup
 
-    if @current_frame.completed?
-      @frame_scores << FrameScore.new(frame: @current_frame,
-                                      cursor: @balls_rolled.length - @current_frame.ball_scores.length,
-                                      balls_rolled: @balls_rolled)
+    @state.balls_rolled  << ball_score
+    @state.current_frame << ball_score
 
-      unless @current_frame.last_frame?
-        @current_frame = Frame.new(number: @current_frame.number + 1)
+    if @state.current_frame.completed?
+      @state.frame_scores << FrameScore.new(frame: @state.current_frame,
+                                            cursor: @state.balls_rolled.length - @state.current_frame.ball_scores.length,
+                                            balls_rolled: @state.balls_rolled)
+
+      unless @state.current_frame.last_frame?
+        @state.current_frame = Frame.new(number: @state.current_frame.number + 1)
       end
     end
   end
@@ -26,6 +36,6 @@ class Game
   def scoreboard
     acc = 0
 
-    @frame_scores.select { |e| e.scoreable? }.map { |e| acc += e.score  }
+    @state.frame_scores.select { |e| e.scoreable? }.map { |e| acc += e.score  }
   end
 end
