@@ -1,6 +1,10 @@
 class Contractor
-  def self.for(description, &b)
-    new(description, &b)
+  def self.for(description)
+    new(description)
+  end
+
+  def self.[](description)
+    self.for(description)
   end
 
   def self.disable_enforcement
@@ -11,7 +15,7 @@ class Contractor
     !!( @conditions_disabled  || ENV["SKIP_CONTRACT_ENFORCEMENT"] )
   end
 
-  def initialize(description, &task)
+  def initialize(description)
     @description  = description
     @assumptions  = []
     @assurances   = []
@@ -35,6 +39,10 @@ class Contractor
 
   def broken(message)
     raise message unless self.class.conditions_disabled?
+  end
+
+  def __fixme__
+    broken("Not implemented yet")
   end
 
   def assumes(description, &b)
@@ -81,3 +89,5 @@ class Contractor
     result
   end
 end
+
+X = Contractor
