@@ -8,15 +8,19 @@ FrameScore = Data.define(:frame, :balls_rolled, :cursor) do
 
     case
     when frame.strike?
-      return unless balls_rolled.length > cursor + 1
+      return unless bonus_rolls_completed?
 
-      10 + balls_rolled[cursor] + balls_rolled[cursor + 1]
+      10 + balls_rolled[cursor + 1] + balls_rolled[cursor + 2]
     when frame.spare?
-      return unless balls_rolled.length > cursor
+      return unless bonus_rolls_completed?
 
-      10 + balls_rolled[cursor]
+      10 + balls_rolled[cursor + 2]
     else
       return frame.ball_scores.sum
     end
+  end
+
+  def bonus_rolls_completed?
+    balls_rolled.length > cursor + 2
   end
 end
