@@ -17,7 +17,7 @@ class Game
   end
 
   def <<(ball_score)
-    @history << @state.dup
+    @history << Marshal.load(Marshal.dump(@state))
 
     @state.balls_rolled  << ball_score
     @state.current_frame << ball_score

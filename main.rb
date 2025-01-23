@@ -35,4 +35,6 @@ p game.scoreboard
 
 game.undo
 
+game << 5
+
 p game.scoreboard
